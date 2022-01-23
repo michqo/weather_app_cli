@@ -1,11 +1,15 @@
-[![](https://github.com/MichalUSER/weather_app_cli)](https://github.com/MichalUSER/weather_app_cli).
+<div align="center">
 
-<h1 align="center">Weather App Cli</p>
+[![](https://tokei.rs/b1/github/MichalUSER/weather_app_cli)](https://github.com/MichalUSER/weather_app_cli).
 
-<p align="center">Cli for my weather app</p>
+# Weather App Cli
 
-<a align="center" href="https://github.com/MichalUSER/weather_app_server">weather_app_server</a>
+- Cli for my weather app
 
-<a align="center" href="https://github.com/MichalUSER/weather_app">weather_app</a>
+[weather_app_server](https://github.com/MichalUSER/weather_app_server)
 
-<a align="center" href="https://github.com/MichalUSER/weather_app_client">weather_app_client</a>
+[weather_app](https://github.com/MichalUSER/weather_app)
+
+[weather_app_client](https://github.com/MichalUSER/weather_app_client)
+
+</div>
