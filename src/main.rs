@@ -8,6 +8,6 @@ mod parse;
 fn main() {
     if parse().is_err() {
         println!("{}", "error fetching the server".red().bold());
-        exit(-1);
+        exit(1);
     }
 }

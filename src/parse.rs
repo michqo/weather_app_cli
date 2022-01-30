@@ -1,7 +1,7 @@
 use chrono::prelude::*;
 use colored::*;
 use serde::Deserialize;
-use std::env;
+use std::{env, process::exit};
 
 #[allow(non_snake_case, dead_code)]
 #[derive(Deserialize)]
@@ -14,6 +14,18 @@ struct Temp {
 }
 
 static URL: &str = "http://192.168.0.100:8080/";
+
+fn average(temps: &[Temp]) -> f32 {
+    temps
+        .iter()
+        .fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap())
+        / temps.len() as f32
+}
+
+fn fetch_temps(day: &str) -> Result<Vec<Temp>, minreq::Error> {
+    let response = minreq::get(format!("{}temps/{}", URL, day)).send()?;
+    response.json()
+}
 
 pub fn parse() -> Result<(), minreq::Error> {
     let mut args: Vec<String> = env::args().collect();
@@ -32,23 +44,35 @@ pub fn parse() -> Result<(), minreq::Error> {
             return Ok(());
         }
     };
-    let t = Utc::now().date();
     match arg {
         "yesterday" => {
-            let response =
-                minreq::get(format!("{}temps/{}", URL, t.day() - 1)).send()?;
-            let json: Vec<Temp> = response.json()?;
-            let average = json
-                .iter()
-                .fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap())
-                / json.len() as f32;
+            let day = Utc::now().date().day();
+            let temps = fetch_temps(day.to_string().as_str())?;
             println!(
                 "{}: {}",
                 "Yesterday".cyan(),
-                format!("{:.2}°C", average).blue().bold()
+                format!("{:.2}°C", average(&temps)).blue().bold()
             );
         }
-        _ => (),
+        "day" => {
+            let day = match args.get(1) {
+                Some(s) => s.as_str(),
+                _ => {
+                    println!("{}", "error: missing argument".red().bold());
+                    exit(1);
+                }
+            };
+            let temps = fetch_temps(day)?;
+            println!(
+                "{}: {}",
+                "Temp".cyan(),
+                format!("{:.2}°C", average(&temps)).blue().bold()
+            );
+        }
+        _ => {
+            println!("{}", "error: invalid argument".red().bold());
+            exit(1);
+        }
     }
     Ok(())
 }
