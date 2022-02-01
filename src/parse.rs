@@ -46,14 +46,14 @@ pub fn parse() -> Result<(), minreq::Error> {
     };
     match arg {
         "yesterday" => {
-            let day = Utc::now().date().day();
+            let day = Utc::now().date().day() - 1;
             let temps = fetch_temps(day.to_string().as_str())?;
             println!(
                 "{}: {}",
                 "Yesterday".cyan(),
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
-        }
+        },
         "day" => {
             let day = match args.get(1) {
                 Some(s) => s.as_str(),
@@ -68,7 +68,7 @@ pub fn parse() -> Result<(), minreq::Error> {
                 "Temp".cyan(),
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
-        }
+        },
         _ => {
             println!("{}", "error: invalid argument".red().bold());
             exit(1);
