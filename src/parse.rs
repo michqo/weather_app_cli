@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+use chrono::Duration;
 use colored::*;
 use serde::Deserialize;
 use std::{env, process::exit};
@@ -22,8 +23,8 @@ fn average(temps: &[Temp]) -> f32 {
         / temps.len() as f32
 }
 
-fn fetch_temps(day: &str) -> Result<Vec<Temp>, minreq::Error> {
-    let response = minreq::get(format!("{}temps/{}", URL, day)).send()?;
+fn fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Error> {
+    let response = minreq::get(format!("{}temps/{}/{}", URL, month, day)).send()?;
     response.json()
 }
 
@@ -46,8 +47,8 @@ pub fn parse() -> Result<(), minreq::Error> {
     };
     match arg {
         "yesterday" => {
-            let day = Utc::now().date().day() - 1;
-            let temps = fetch_temps(day.to_string().as_str())?;
+            let yesterday = Utc::now() - Duration::days(1);
+            let temps = fetch_temps(yesterday.month().to_string(), yesterday.day().to_string())?;
             println!(
                 "{}: {}",
                 "Yesterday".cyan(),
@@ -56,13 +57,13 @@ pub fn parse() -> Result<(), minreq::Error> {
         },
         "day" => {
             let day = match args.get(1) {
-                Some(s) => s.as_str(),
+                Some(s) => s,
                 _ => {
                     println!("{}", "error: missing argument".red().bold());
                     exit(1);
                 }
             };
-            let temps = fetch_temps(day)?;
+            let temps = fetch_temps(Utc::now().month().to_string(), day.to_string())?;
             println!(
                 "{}: {}",
                 "Temp".cyan(),
