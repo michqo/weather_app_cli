@@ -25,6 +25,12 @@ fn average(temps: &[Temp]) -> f32 {
 
 fn fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Error> {
     let response = minreq::get(format!("{}temps/{}/{}", URL, month, day)).send()?;
+    if let Ok(r) = response.as_str() {
+        if r == "[]" {
+            println!("{}", "temps not found".red().bold());
+            exit(1);
+        }
+    }
     response.json()
 }
 
@@ -54,7 +60,7 @@ pub fn parse() -> Result<(), minreq::Error> {
                 "Yesterday".cyan(),
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
-        },
+        }
         "day" => {
             let day = match args.get(1) {
                 Some(s) => s,
@@ -66,10 +72,10 @@ pub fn parse() -> Result<(), minreq::Error> {
             let temps = fetch_temps(Utc::now().month().to_string(), day.to_string())?;
             println!(
                 "{} average: {}",
-                format!("{}.{}.", day, Utc::now().month()).bright_cyan(),
+                format!("{}.{}", day, Utc::now().month()).bright_cyan(),
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
-        },
+        }
         "today" => {
             let now = Utc::now();
             let temps = fetch_temps(now.month().to_string(), now.day().to_string())?;
@@ -78,7 +84,7 @@ pub fn parse() -> Result<(), minreq::Error> {
                 "Average".cyan(),
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
-        },
+        }
         _ => {
             println!("{}", "error: invalid argument".red().bold());
             exit(1);
