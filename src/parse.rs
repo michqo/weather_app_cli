@@ -1,38 +1,11 @@
 use chrono::prelude::*;
 use chrono::Duration;
 use colored::*;
-use serde::Deserialize;
 use std::{env, process::exit};
 
-#[allow(non_snake_case, dead_code)]
-#[derive(Deserialize)]
-struct Temp {
-    pub y: i32,
-    pub m: i32,
-    pub d: i32,
-    pub h: i32,
-    pub averageTemp: String,
-}
-
-static URL: &str = "http://192.168.0.100:8080/";
-
-fn average(temps: &[Temp]) -> f32 {
-    temps
-        .iter()
-        .fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap())
-        / temps.len() as f32
-}
-
-fn fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Error> {
-    let response = minreq::get(format!("{}temps/{}/{}", URL, month, day)).send()?;
-    if let Ok(r) = response.as_str() {
-        if r == "[]" {
-            println!("{}", "temps not found".red().bold());
-            exit(1);
-        }
-    }
-    response.json()
-}
+use crate::URL;
+use crate::utils::*;
+use crate::temp::Temp;
 
 pub fn parse() -> Result<(), minreq::Error> {
     let mut args: Vec<String> = env::args().collect();
@@ -84,6 +57,29 @@ pub fn parse() -> Result<(), minreq::Error> {
                 "Average".cyan(),
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
+        }
+        "week" => {
+            let now = Utc::now();
+            let mut averages: Vec<f32> = Vec::new();
+            for i in 0..8 {
+                let day = now - Duration::days(i);
+                let temps = fetch_temps(day.month().to_string(), day.day().to_string())?;
+                let average = average(&temps);
+                println!(
+                    "{} average: {}",
+                    format!("{}.{}.", day.day(), day.month()).bright_cyan(),
+                    format!("{:.2}°C", average).blue().bold()
+                );
+                averages.push(average);
+            }
+            let week_ago = averages[averages.len() - 1];
+            let today = averages[0];
+            let percentage = today.max(week_ago) / today.min(week_ago) * 100.0 - 100.0;
+            if week_ago > today {
+                println!("{} down from a week ago", format!("-{:.2}%", percentage).red());
+            } else {
+                println!("{} up from a week ago", format!("+{:.2}%", percentage).green());
+            }
         }
         _ => {
             println!("{}", "error: invalid argument".red().bold());

@@ -3,7 +3,11 @@ use std::process::exit;
 
 use parse::parse;
 
+mod temp;
 mod parse;
+mod utils;
+
+static URL: &str = "http://192.168.0.100:8080/";
 
 fn main() {
     if parse().is_err() {
