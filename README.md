@@ -4,6 +4,10 @@
 
 **Cli for my weather app**
 
+## Screenshot
+
+![Screenshot](https://github.com/MichalUSER/weather_app_cli/screenshot.png)
+
 <br>
 
 [weather_app_server](https://github.com/MichalUSER/weather_app_server)
