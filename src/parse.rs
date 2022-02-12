@@ -72,7 +72,7 @@ pub fn parse() -> Result<(), minreq::Error> {
             let temps = fetch_temps(Utc::now().month().to_string(), day.to_string())?;
             println!(
                 "{} average: {}",
-                format!("{}.{}", day, Utc::now().month()).bright_cyan(),
+                format!("{}.{}.", day, Utc::now().month()).bright_cyan(),
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
         }
