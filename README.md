@@ -6,7 +6,7 @@
 
 ## Screenshot
 
-![Screenshot](https://github.com/MichalUSER/weather_app_cli/screenshot.png)
+![Screenshot](https://github.com/MichalUSER/weather_app_cli/blob/main/screenshot.png?raw=true)
 
 <br>
 
