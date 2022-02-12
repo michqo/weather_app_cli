@@ -75,7 +75,7 @@ pub fn parse() -> Result<(), minreq::Error> {
             let week_ago = averages[averages.len() - 1];
             let today = averages[0];
             let percentage = today.max(week_ago) / today.min(week_ago) * 100.0 - 100.0;
-            if week_ago < today {
+            if week_ago > today {
                 println!("{} colder than a week ago", format!("-{:.2}%", percentage).blue());
             } else {
                 println!("{} warmer than a week ago", format!("+{:.2}%", percentage).yellow());
