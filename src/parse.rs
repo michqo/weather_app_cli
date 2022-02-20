@@ -58,7 +58,7 @@ pub fn parse() -> Result<(), minreq::Error> {
                 format!("{:.2}°C", average(&temps)).blue().bold()
             );
         }
-        "week" => {
+        /*"week" => {
             let now = Utc::now();
             let mut averages: Vec<f32> = Vec::new();
             for i in 0..8 {
@@ -71,6 +71,28 @@ pub fn parse() -> Result<(), minreq::Error> {
                     format!("{:.2}°C", average).blue().bold()
                 );
                 averages.push(average);
+            }
+            let week_ago = averages[averages.len() - 1];
+            let today = averages[0];
+            let percentage = today.max(week_ago) / today.min(week_ago) * 100.0 - 100.0;
+            if week_ago > today {
+                println!("{} colder than a week ago", format!("-{:.2}%", percentage).blue());
+            } else {
+                println!("{} warmer than a week ago", format!("+{:.2}%", percentage).yellow());
+            }
+        }*/
+        "week" => {
+            let temps = fetch_week()?;
+            let averages = week_averages(temps);
+            let now = Utc::now();
+            for i in 0..8 {
+                let day = now - Duration::days(i);
+                let average = averages[i as usize];
+                println!(
+                    "{} average: {}",
+                    format!("{}.{}.", day.day(), day.month()).bright_cyan(),
+                    format!("{:.2}°C", average).blue().bold()
+                );
             }
             let week_ago = averages[averages.len() - 1];
             let today = averages[0];
