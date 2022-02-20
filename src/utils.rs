@@ -6,7 +6,6 @@ use std::process::exit;
 use crate::temp::Temp;
 use crate::URL;
 
-// TODO: Verify if this works
 pub fn week_averages(temps: Vec<Temp>) -> Vec<f32> {
     let mut averages: Vec<f32> = Vec::new();
     let now = Utc::now();
