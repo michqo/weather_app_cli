@@ -19,7 +19,7 @@ pub fn parse() -> Result<(), minreq::Error> {
             println!(
                 "{}: {}",
                 "Last".cyan(),
-                format!("{}°C", json.averageTemp).blue().bold()
+                print_temp(json.averageTemp)
             );
             return Ok(());
         }
