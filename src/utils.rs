@@ -42,7 +42,7 @@ pub fn fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Erro
 }
 
 pub fn fetch_week() -> Result<Vec<Temp>, minreq::Error> {
-    let response = minreq::get(format!("{}last_week", URL)).send()?;
+    let response = minreq::get(format!("{}last_days/7", URL)).send()?;
     if let Ok(r) = response.as_str() {
         if r == "[]" {
             println!("{}", "temps not found".red().bold());
