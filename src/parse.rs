@@ -3,7 +3,7 @@ use chrono::Duration;
 use colored::*;
 use std::{env, process::exit};
 
-use crate::URL;
+use crate::{URL, HELP};
 use crate::utils::*;
 use crate::temp::Temp;
 
@@ -25,6 +25,9 @@ pub fn parse() -> Result<(), minreq::Error> {
         }
     };
     match arg {
+        "help" => {
+            println!("{}", HELP);
+        }
         "yesterday" => {
             let yesterday = Utc::now() - Duration::days(1);
             let temps = fetch_temps(yesterday.month().to_string(), yesterday.day().to_string())?;
