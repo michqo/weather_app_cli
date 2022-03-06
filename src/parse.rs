@@ -88,6 +88,9 @@ pub fn parse() -> Result<(), minreq::Error> {
             for i in 0..8 {
                 let day = now - Duration::days(i);
                 let average = averages[i as usize];
+                if average.is_nan() {
+                    continue;
+                }
                 println!(
                     "{} average: {}",
                     format!("{}.{}.", day.day(), day.month()).bright_cyan(),
