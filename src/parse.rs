@@ -88,10 +88,12 @@ pub fn parse() -> Result<(), minreq::Error> {
             let temps = fetch_week()?;
             let averages = week_averages(temps);
             let now = Utc::now();
+            let mut not_week = false;
             for i in 0..8 {
                 let day = now - Duration::days(i);
                 let average = averages[i as usize];
                 if average.is_nan() {
+                    not_week = true;
                     continue;
                 }
                 println!(
@@ -99,6 +101,9 @@ pub fn parse() -> Result<(), minreq::Error> {
                     format!("{}.{}.", day.day(), day.month()).bright_cyan(),
                     format!("{:.2}°C", average).blue().bold()
                 );
+            }
+            if not_week {
+                exit(0);
             }
             let week_ago = averages[averages.len() - 1];
             let today = averages[0];
