@@ -111,6 +111,7 @@ pub fn parse() -> Result<(), minreq::Error> {
         }
         _ => {
             println!("{}", "error: invalid argument".red().bold());
+            println!("use argument {} to view help page", "help".purple());
             exit(1);
         }
     }
