@@ -10,6 +10,15 @@ pub fn print_temp(t: String) -> ColoredString {
     format!("{}°C", t).blue().bold()
 }
 
+fn round(average: f32) -> f32 {
+    let mut average = format!("{:.2}", average);
+    if average.chars().last().unwrap() == '0' {
+        average.pop();
+    }
+
+    average.parse::<f32>().unwrap()
+}
+
 pub fn week_averages(temps: Vec<Temp>) -> Vec<f32> {
     let mut averages: Vec<f32> = Vec::new();
     let now = Utc::now();
@@ -17,17 +26,24 @@ pub fn week_averages(temps: Vec<Temp>) -> Vec<f32> {
         let day = now - Duration::days(i);
         let day_temps = temps.iter().filter(|t| t.d == day.day() as i32);
         let count = day_temps.clone().count() as f32;
-        averages
-            .push(day_temps.fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap()) / count);
+        let average = day_temps
+            .fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap())
+            / count;
+        if average.is_nan() {
+            continue;
+        }
+        averages.push(round(average));
     }
     averages
 }
 
 pub fn average(temps: &[Temp]) -> f32 {
-    temps
+    let average = temps
         .iter()
         .fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap())
-        / temps.len() as f32
+        / temps.len() as f32;
+
+    round(average)
 }
 
 pub fn fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Error> {

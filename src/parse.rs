@@ -34,7 +34,7 @@ pub fn parse() -> Result<(), minreq::Error> {
             println!(
                 "{}: {}",
                 "Yesterday".cyan(),
-                format!("{:.2}°C", average(&temps)).blue().bold()
+                format!("{}°C", average(&temps)).blue().bold()
             );
         }
         "day" => {
@@ -49,7 +49,7 @@ pub fn parse() -> Result<(), minreq::Error> {
             println!(
                 "{} average: {}",
                 format!("{}.{}.", day, Utc::now().month()).bright_cyan(),
-                format!("{:.2}°C", average(&temps)).blue().bold()
+                format!("{}°C", average(&temps)).blue().bold()
             );
         }
         "today" => {
@@ -58,7 +58,7 @@ pub fn parse() -> Result<(), minreq::Error> {
             println!(
                 "{}: {}",
                 "Average".cyan(),
-                format!("{:.2}°C", average(&temps)).blue().bold()
+                format!("{}°C", average(&temps)).blue().bold()
             );
         }
         /*"week" => {
@@ -91,15 +91,18 @@ pub fn parse() -> Result<(), minreq::Error> {
             let mut not_week = false;
             for i in 0..8 {
                 let day = now - Duration::days(i);
-                let average = averages[i as usize];
-                if average.is_nan() {
-                    not_week = true;
-                    continue;
-                }
+                let average = averages.get(i as usize);
+                let average = match average {
+                    Some(average) => average,
+                    None => {
+                        not_week = true;
+                        continue;
+                    }
+                };
                 println!(
                     "{} average: {}",
                     format!("{}.{}.", day.day(), day.month()).bright_cyan(),
-                    format!("{:.2}°C", average).blue().bold()
+                    format!("{}°C", average).blue().bold()
                 );
             }
             if not_week {
@@ -109,9 +112,9 @@ pub fn parse() -> Result<(), minreq::Error> {
             let today = averages[0];
             let percentage = today.max(week_ago) / today.min(week_ago) * 100.0 - 100.0;
             if week_ago > today {
-                println!("{} colder than a week ago", format!("{:.2} %", percentage).blue());
+                println!("{} colder than a week ago", format!("{} %", percentage).blue());
             } else {
-                println!("{} warmer than a week ago", format!("{:.2} %", percentage).yellow());
+                println!("{} warmer than a week ago", format!("{} %", percentage).yellow());
             }
         }
         _ => {
