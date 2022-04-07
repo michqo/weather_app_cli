@@ -30,7 +30,7 @@ pub fn week_averages(temps: Vec<Temp>) -> Vec<f32> {
             .fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap())
             / count;
         if average.is_nan() {
-            continue;
+            averages.push(average);
         }
         averages.push(round(average));
     }

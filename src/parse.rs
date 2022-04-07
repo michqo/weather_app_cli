@@ -68,14 +68,11 @@ pub fn parse() -> Result<(), minreq::Error> {
             let mut not_week = false;
             for i in 0..8 {
                 let day = now - Duration::days(i);
-                let average = averages.get(i as usize);
-                let average = match average {
-                    Some(average) => average,
-                    None => {
-                        not_week = true;
-                        continue;
-                    }
-                };
+                let average = averages[i as usize];
+                if average.is_nan() {
+                    not_week = true;
+                    continue;
+                }
                 println!(
                     "{} average: {}",
                     format!("{}.{}.", day.day(), day.month()).bright_cyan(),
