@@ -9,3 +9,8 @@ pub struct Temp {
     pub h: i32,
     pub averageTemp: String,
 }
+
+#[derive(Deserialize)]
+pub struct Average {
+    pub average: String,
+}

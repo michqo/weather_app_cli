@@ -3,7 +3,7 @@ use chrono::Duration;
 use colored::*;
 use std::process::exit;
 
-use crate::temp::Temp;
+use crate::types::{Temp, Average};
 use crate::URL;
 
 pub fn print_temp(t: String) -> ColoredString {
@@ -37,17 +37,19 @@ pub fn week_averages(temps: Vec<Temp>) -> Vec<f32> {
     averages
 }
 
-pub fn average(temps: &[Temp]) -> f32 {
-    let average = temps
-        .iter()
-        .fold(0.0, |a, t| a + t.averageTemp.parse::<f32>().unwrap())
-        / temps.len() as f32;
-
-    round(average)
+pub fn _fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Error> {
+    let response = minreq::get(format!("{}temps/{}/{}", URL, month, day)).send()?;
+    if let Ok(r) = response.as_str() {
+        if r == "[]" {
+            println!("{}", "temps not found".red().bold());
+            exit(1);
+        }
+    }
+    response.json()
 }
 
-pub fn fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Error> {
-    let response = minreq::get(format!("{}temps/{}/{}", URL, month, day)).send()?;
+pub fn fetch_average(month: u32, day: u32) -> Result<Average, minreq::Error> {
+    let response = minreq::get(format!("{}average/{}/{}", URL, month, day)).send()?;
     if let Ok(r) = response.as_str() {
         if r == "[]" {
             println!("{}", "temps not found".red().bold());

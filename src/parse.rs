@@ -5,7 +5,7 @@ use std::{env, process::exit};
 
 use crate::{URL, HELP};
 use crate::utils::*;
-use crate::temp::Temp;
+use crate::types::Temp;
 
 pub fn parse() -> Result<(), minreq::Error> {
     let mut args: Vec<String> = env::args().collect();
@@ -30,11 +30,11 @@ pub fn parse() -> Result<(), minreq::Error> {
         }
         "yesterday" => {
             let yesterday = Utc::now() - Duration::days(1);
-            let temps = fetch_temps(yesterday.month().to_string(), yesterday.day().to_string())?;
+            let average = fetch_average(yesterday.month(), yesterday.day())?;
             println!(
                 "{}: {}",
                 "Yesterday".cyan(),
-                format!("{}°C", average(&temps)).blue().bold()
+                format!("{}°C", average.average).blue().bold()
             );
         }
         "day" => {
@@ -45,20 +45,41 @@ pub fn parse() -> Result<(), minreq::Error> {
                     exit(1);
                 }
             };
-            let temps = fetch_temps(Utc::now().month().to_string(), day.to_string())?;
+            let day: u32 = match day.parse() {
+                Ok(day) => day,
+                _ => {
+                    println!("{}", "error: argument not a number".red().bold());
+                    exit(1);
+                }
+            };
+            let average = fetch_average(Utc::now().month(), day)?;
+            let average = match average.average.as_str() {
+                "NaN" => {
+                    println!("{}", "error: average not found".red().bold());
+                    exit(1);
+                }
+                average => average
+            };
             println!(
                 "{} average: {}",
                 format!("{}.{}.", day, Utc::now().month()).bright_cyan(),
-                format!("{}°C", average(&temps)).blue().bold()
+                format!("{}°C", average).blue().bold()
             );
         }
         "today" => {
             let now = Utc::now();
-            let temps = fetch_temps(now.month().to_string(), now.day().to_string())?;
+            let average = fetch_average(now.month(), now.day())?;
+            let average = match average.average.as_str() {
+                "NaN" => {
+                    println!("{}", "error: average not found".red().bold());
+                    exit(1);
+                }
+                average => average
+            };
             println!(
                 "{}: {}",
                 "Average".cyan(),
-                format!("{}°C", average(&temps)).blue().bold()
+                format!("{}°C", average).blue().bold()
             );
         }
         "week" => {
