@@ -37,17 +37,6 @@ pub fn week_averages(temps: Vec<Temp>) -> Vec<f32> {
     averages
 }
 
-pub fn _fetch_temps(month: String, day: String) -> Result<Vec<Temp>, minreq::Error> {
-    let response = minreq::get(format!("{}temps/{}/{}", URL, month, day)).send()?;
-    if let Ok(r) = response.as_str() {
-        if r == "[]" {
-            println!("{}", "temps not found".red().bold());
-            exit(1);
-        }
-    }
-    response.json()
-}
-
 pub fn fetch_average(month: u32, day: u32) -> Result<Average, minreq::Error> {
     let response = minreq::get(format!("{}average/{}/{}", URL, month, day)).send()?;
     if let Ok(r) = response.as_str() {

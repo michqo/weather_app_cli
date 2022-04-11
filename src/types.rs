@@ -12,5 +12,5 @@ pub struct Temp {
 
 #[derive(Deserialize)]
 pub struct Average {
-    pub average: String,
+    pub average: f32,
 }

@@ -31,6 +31,10 @@ pub fn parse() -> Result<(), minreq::Error> {
         "yesterday" => {
             let yesterday = Utc::now() - Duration::days(1);
             let average = fetch_average(yesterday.month(), yesterday.day())?;
+            if average.average.is_nan() {
+                println!("{}", "error: average not found".red().bold());
+                exit(1);
+            }
             println!(
                 "{}: {}",
                 "Yesterday".cyan(),
@@ -53,33 +57,27 @@ pub fn parse() -> Result<(), minreq::Error> {
                 }
             };
             let average = fetch_average(Utc::now().month(), day)?;
-            let average = match average.average.as_str() {
-                "NaN" => {
-                    println!("{}", "error: average not found".red().bold());
-                    exit(1);
-                }
-                average => average
-            };
+            if average.average.is_nan() {
+                println!("{}", "error: average not found".red().bold());
+                exit(1);
+            }
             println!(
                 "{} average: {}",
                 format!("{}.{}.", day, Utc::now().month()).bright_cyan(),
-                format!("{}°C", average).blue().bold()
+                format!("{}°C", average.average).blue().bold()
             );
         }
         "today" => {
             let now = Utc::now();
             let average = fetch_average(now.month(), now.day())?;
-            let average = match average.average.as_str() {
-                "NaN" => {
-                    println!("{}", "error: average not found".red().bold());
-                    exit(1);
-                }
-                average => average
-            };
+            if average.average.is_nan() {
+                println!("{}", "error: average not found".red().bold());
+                exit(1);
+            }
             println!(
                 "{}: {}",
                 "Average".cyan(),
-                format!("{}°C", average).blue().bold()
+                format!("{}°C", average.average).blue().bold()
             );
         }
         "week" => {
