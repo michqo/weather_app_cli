@@ -2,7 +2,7 @@
 
 # Weather App Cli
 
-**Cli for my weather app**
+**Simple cli for my weather app**
 
 ## Screenshot
 
