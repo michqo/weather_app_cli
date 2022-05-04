@@ -2,10 +2,10 @@ use chrono::prelude::*;
 use chrono::Duration;
 use colored::*;
 use std::{env, process::exit};
+use weather_api::types::Temp;
 
 use crate::{URL, HELP};
 use crate::utils::*;
-use crate::types::Temp;
 
 pub fn parse() -> Result<(), minreq::Error> {
     let mut args: Vec<String> = env::args().collect();

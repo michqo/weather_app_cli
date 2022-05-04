@@ -3,7 +3,6 @@ use std::process::exit;
 
 use parse::parse;
 
-mod types;
 mod parse;
 mod utils;
 
