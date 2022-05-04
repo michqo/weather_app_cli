@@ -205,6 +205,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a143597ca7c7793eff794def352d41792a93c481eb1042423ff7ff72ba2c31f"
 
 [[package]]
+name = "weather_api"
+version = "0.1.0"
+source = "git+https://github.com/MichalUSER/weather_app_api.git?rev=22ebae7fcfb69adee9448d0f270018d3360a636e#22ebae7fcfb69adee9448d0f270018d3360a636e"
+dependencies = [
+ "chrono",
+ "minreq",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "weather_cli"
 version = "0.1.0"
 dependencies = [
@@ -213,6 +224,7 @@ dependencies = [
  "minreq",
  "serde",
  "serde_json",
+ "weather_api",
 ]
 
 [[package]]

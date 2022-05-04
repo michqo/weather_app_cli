@@ -11,6 +11,10 @@ pub fn parse() -> Result<(), minreq::Error> {
     let mut args: Vec<String> = env::args().collect();
     args.drain(0..1);
     let last_url = format!("{}last_temp", URL);
+    let api = weather_api::Api {
+        url: URL.to_string()
+    };
+
     let arg = match args.get(0) {
         Some(s) => s.as_str(),
         _ => {
@@ -30,7 +34,7 @@ pub fn parse() -> Result<(), minreq::Error> {
         }
         "yesterday" => {
             let yesterday = Utc::now() - Duration::days(1);
-            let average = fetch_average(yesterday.month(), yesterday.day())?;
+            let average = api.fetch_average(yesterday.month(), yesterday.day())?;
             if average.average.is_nan() {
                 println!("{}", "error: average not found".red().bold());
                 exit(1);
@@ -56,7 +60,7 @@ pub fn parse() -> Result<(), minreq::Error> {
                     exit(1);
                 }
             };
-            let average = fetch_average(Utc::now().month(), day)?;
+            let average = api.fetch_average(Utc::now().month(), day)?;
             if average.average.is_nan() {
                 println!("{}", "error: average not found".red().bold());
                 exit(1);
@@ -69,7 +73,7 @@ pub fn parse() -> Result<(), minreq::Error> {
         }
         "today" => {
             let now = Utc::now();
-            let average = fetch_average(now.month(), now.day())?;
+            let average = api.fetch_average(now.month(), now.day())?;
             if average.average.is_nan() {
                 println!("{}", "error: average not found".red().bold());
                 exit(1);
@@ -81,8 +85,8 @@ pub fn parse() -> Result<(), minreq::Error> {
             );
         }
         "week" => {
-            let temps = fetch_week()?;
-            let averages = week_averages(temps);
+            let temps = api.fetch_last_days(8)?;
+            let averages = api.week_averages(temps);
             let now = Utc::now();
             let mut not_week = false;
             for i in 0..8 {
